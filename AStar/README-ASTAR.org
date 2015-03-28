@@ -1,0 +1,12 @@
+#+TITLE: 
+#+AUTHOR: Jeff
+
+
+* how to test your implementation on your example(s)
+* a description of each file that are important for this lab
+* a description of the example(s) and the heuristics that you have used
+
+* TODO A* Search in Typescript
+* TODO some example using A*
+* TODO heuristic functions in shrdlite?
+
