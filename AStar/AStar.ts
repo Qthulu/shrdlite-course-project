@@ -1,3 +1,5 @@
+/// <reference path="lib/collections.ts" />
+
 class Nod { 
     name : string ;
     neighbours : Nod[]; 
@@ -5,57 +7,54 @@ class Nod {
 	this.name = n;
 	this.neighbours = neigh;
     }
-
-    getNeighbours():Nod[]{
-	return this.neighbours;
-    }
+    f_score : number;
 }
-    
-// Graph as [ (Node, [(Node, Distance)]) ]
-// Priority Q ?
+
 
 function astar (start : Nod, goal : Nod) : Nod[] {
-    var closedset : Nod[] = [];
-    var openset : Nod[] = [start]; 
-    return []; 
+    var open = new collections.Set<Nod>();
+    var closed = new collections.Set<Nod>();
+    open.add(start); 
+    var came_from = new collections.Set<Nod>();
+    while(!open.isEmpty()){
+	var current = findLowestF(open);
+    }
+    return [];
+}
+
+// How can one have collections.Set in params' type?
+function findLowestF (inputSet) : Nod {
+    return ;
+}
+
+function heuristic (inputNode : Nod, goalNode : Nod) : number {
+    return 0 ; // Djikstra    
 }
 
 
-// heuristic function is factored out delibrately 
-function heuristic (inputNode : Nod) : number {
-    return 0 ; // Djikstra
-    
-}
 
-var a : Nod = new Nod ("A", [b, c, d])
+var a : Nod = new Nod ("A", [b, c, d]);
+var x = a.f_score;
+console.log( x < 10); // default value is undefined
+// undefined is not bigger or smaller than anything !
+
 var b : Nod = new Nod ("B", [a])
 var c : Nod = new Nod ("C", [a, d])
 var d : Nod = new Nod ("D", [a, c])
 var cities : Nod[] = [a, b, c, d]
 
-// heuristicTable is assumed to be built 
-var heuristicTable : Pair<Nod, number>[] = buildingHeu(cities);
+// // heuristicTable is assumed to be built 
+// var heuristicTable : Pair<Nod, number>[] = buildingHeu(cities);
 
-function buildingHeu (input : Nod[]){
-    var table : Pair<Nod, number>[] = []; 
-    for (var i = 0 ; i < input.length ; i++)
-    {
-	table[i] = [input[i], i]; 
-    }
-    return table;
-}
+// function buildingHeu (input : Nod[]){
+//     var table : Pair<Nod, number>[] = []; 
+//     for (var i = 0 ; i < input.length ; i++)
+//     {
+// 	table[i] = [input[i], i]; 
+//     }
+//     return table;
+// }
+// document.body.innerHTML= astar ();
 
-
-interface Pair<K, V> extends Array<K | V> { 0: K; 1: V; }
-// var x: KeyValuePair<number, string> = [10, "ten"];
-
-// document.body.innerHTML = show(heuristicTable);
-function show (input : Pair<Nod, number>[]){
-    var output = "" ; 
-    for (var i = 0 ; i < input.length ; i++)
-    {
-	output = output + "CityName: " + input[i][0].name + "\t"; 
-	output = output + "h: " + input[i][1] ;
-    }
-    return output ; 
-}
+// interface Pair<K, V> extends Array<K | V> { 0: K; 1: V; }
+// // var x: KeyValuePair<number, string> = [10, "ten"];
