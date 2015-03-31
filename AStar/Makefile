@@ -1,4 +1,4 @@
-TS_FILE=AStar_withSet.ts
+TS_FILE=Searching.ts
 LIB=lib/collections.ts lib/node.d.ts
 OUT=Output.js
 
