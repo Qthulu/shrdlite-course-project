@@ -25,6 +25,15 @@ interface GoalTest<T> {
 
 /*SEARCHES*/
 
+interface Nod<T>{
+    parent :Nod<T>;
+}
+
+function bfs<T>(neghibourFunction :Neighbours<Nod<T>>, start :Nod<T>, goalTest :GoalTest<T>){
+    return undefined;
+    // utterly layered implementation; dont know if this many generics help or not?
+}
+
 function breadthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
     var q = new collections.Queue<T>();
     var explored = [];
@@ -44,7 +53,7 @@ function breadthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
 	    }
 	}
     }
-    return undefined;
+    return undefined; // failure 
 }
 
 function depthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
@@ -65,7 +74,7 @@ function depthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
 	    }
 	}
     }
-    return undefined;
+    return undefined; // failure 
 }
 
 // helper funciton
@@ -90,7 +99,7 @@ function addNode<T>(g :Graph<T>, node :T){
 
 function addEdge<T>(g :Graph<T>, start :T, end :T, cost :number){
     g.graph.getValue(start).setValue(end, cost);
-    //g.graph.getValue(end).setValue(start, cost);
+    //g.graph.getValue(end).setValue(start, cost); //This means undirected graph
 }
 
 function getNeighbours<T>(g :Graph<T>, node :T) :T[]{
