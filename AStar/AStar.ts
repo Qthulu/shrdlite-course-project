@@ -12,12 +12,14 @@ class Nod {
 
 
 function astar (start : Nod, goal : Nod) : Nod[] {
-    var open = new collections.Set<Nod>();
-    var closed = new collections.Set<Nod>();
-    open.add(start); 
-    var came_from = new collections.Set<Nod>();
-    while(!open.isEmpty()){
+    var open = new Array<Nod>();
+    var closed = new Array<Nod>();
+    open.push(start); 
+    var came_from = new Array<Nod>();
+    while(open.length > 0 ){
 	var current = findLowestF(open);
+	console.log (current);
+	open = [] ; 
     }
     return [];
 }
@@ -37,7 +39,6 @@ var a : Nod = new Nod ("A", [b, c, d]);
 var x = a.f_score;
 console.log( x < 10); // default value is undefined
 // undefined is not bigger or smaller than anything !
-
 var b : Nod = new Nod ("B", [a])
 var c : Nod = new Nod ("C", [a, d])
 var d : Nod = new Nod ("D", [a, c])
