@@ -29,52 +29,57 @@ interface Nod<T>{
     parent :Nod<T>;
 }
 
-function bfs<T>(neghibourFunction :Neighbours<Nod<T>>, start :Nod<T>, goalTest :GoalTest<T>){
-    return undefined;
-    // utterly layered implementation; dont know if this many generics help or not?
+function backtrace<T>(node :Nod<T>){
+    var path = [node];
+    while(node.parent){
+	node = node.parent;
+	path.push(node);
+    }
+    return path;
 }
 
-function breadthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
-    var q = new collections.Queue<T>();
+function bfs<T>(neighbourFunction :Neighbours<Nod<T>>, start :Nod<T>, goalTest :GoalTest<Nod<T>>){
+    var q = new collections.Queue<Nod<T>>();
     var explored = [];
     q.enqueue(start);
     explored.push(start);
-    while(! q.isEmpty()){
+    while (! q.isEmpty()){
 	var v = q.dequeue();
-	if (goalTest(v)){ return explored; } // reconstruction to real path?
-	else {
-	    var neighs = getNeighbours(g, v);
-	    for (var i = 0; i < neighs.length; i++){
-		if(!containing(explored, neighs[i])){
-		    //neighs[i].parent = v; // need a Nod still
-		    q.enqueue(neighs[i]);
-		    explored.push(neighs[i]);
+	if(goalTest(v)){ return v; } 
+	else{
+	    var neighbours = neighbourFunction(v);
+	    for (var i = 0; i < neighbours.length; i++){
+		if(!containing(explored, neighbours[i])){
+		    neighbours[i].parent = v;
+		    q.enqueue(neighbours[i]);
+		    explored.push(neighbours[i]);
 		}
 	    }
 	}
     }
-    return undefined; // failure 
+    return undefined; // failure case
 }
 
-function depthFirst<T>(g :Graph<T>, start :T, goalTest :GoalTest<T>){
-    var q = new collections.Stack<T>();
+function dfs<T>(neighbourFunction :Neighbours<Nod<T>>, start :Nod<T>, goalTest :GoalTest<Nod<T>>){
+    var q = new collections.Stack<Nod<T>>();
     var explored = [];
     q.push(start);
     explored.push(start);
-    while(! q.isEmpty()){
+    while (! q.isEmpty()){
 	var v = q.pop();
-	if (goalTest(v)){ return explored; } 
-	else {
-	    var neighs = getNeighbours(g, v);
-	    for (var i = 0; i < neighs.length; i++){
-		if(!containing(explored, neighs[i])){
-		    q.push(neighs[i]);
-		    explored.push(neighs[i]);
+	if(goalTest(v)){ return v; } 
+	else{
+	    var neighbours = neighbourFunction(v);
+	    for (var i = 0; i < neighbours.length; i++){
+		if(!containing(explored, neighbours[i])){
+		    neighbours[i].parent = v;
+		    q.push(neighbours[i]);
+		    explored.push(neighbours[i]);
 		}
 	    }
 	}
     }
-    return undefined; // failure 
+    return undefined; // failure case
 }
 
 // helper funciton
@@ -85,62 +90,3 @@ function containing<T>(list :T[], elem :T) :boolean{
     return false;
 }
 
-/*GRAPH STUFF*/
-class Graph<T>{
-    graph : collections.Dictionary<T, collections.Dictionary<T, number>>;
-    constructor(){
-	this.graph = new collections.Dictionary<T, collections.Dictionary<T, number>>();
-    }
-}
-
-function addNode<T>(g :Graph<T>, node :T){
-    g.graph.setValue(node, new collections.Dictionary<T, number>());
-}
-
-function addEdge<T>(g :Graph<T>, start :T, end :T, cost :number){
-    g.graph.getValue(start).setValue(end, cost);
-    //g.graph.getValue(end).setValue(start, cost); //This means undirected graph
-}
-
-function getNeighbours<T>(g :Graph<T>, node :T) :T[]{
-    return g.graph.getValue(node).keys();
-}
-
-function getCost<T>(g :Graph<T>, a :T, b :T) :number{
-    return g.graph.getValue(a).getValue(b);
-}
-
-/*Examples*/
-class Tile {
-    constructor(public x :number, public y :number){}
-    toString(){return "Tile:"+ this.x + "_" + this.y ;}
-}
-
-var tileGrid = new Graph<Tile>();
-var tileA = new Tile(0,0);
-var tileB = new Tile(0,1);
-var tileC = new Tile(1,1);
-var tileD = new Tile(2,2);
-addNode(tileGrid, tileA);
-addNode(tileGrid, tileB);
-addNode(tileGrid, tileC);
-addNode(tileGrid, tileD);
-addEdge(tileGrid, tileA, tileB, 1);
-addEdge(tileGrid, tileA, tileC, 10);
-addEdge(tileGrid, tileB, tileC, 2);
-addEdge(tileGrid, tileC, tileD, 10);
-addEdge(tileGrid, tileD, tileC, 10);
-
-var neighboursOfB = getNeighbours(tileGrid, tileA); 
-for (var i = 0; i < neighboursOfB.length; i++){
-    console.log(neighboursOfB[i].toString()); 
-}
-
-function tileGoalTest (t :Tile) :boolean{
-    if (t == tileC){
-	return true;
-    }
-    return false;
-}
-
-console.log(breadthFirst(tileGrid, tileA, tileGoalTest));

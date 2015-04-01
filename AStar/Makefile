@@ -1,4 +1,4 @@
-TS_FILE=Searching.ts
+TS_FILE=Graph.ts
 LIB=lib/collections.ts lib/node.d.ts
 OUT=Output.js
 
