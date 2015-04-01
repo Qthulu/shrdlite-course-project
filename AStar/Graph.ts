@@ -30,7 +30,8 @@ function breadthFirst<T>(g :Graph<Nod<T>>, start :Nod<T>, goalTest :GoalTest<Nod
     var nf = function<T> (node :Nod<T>){
 	return getNeighbours(g, node);
     }
-    return bfs(nf, start, goalTest);
+    var v = bfs(nf, start, goalTest);
+    return backtrace(v);
 }
 
 /*Examples*/
@@ -63,7 +64,7 @@ for (var i = 0; i < neighboursOfB.length; i++){
 }
 
 function tileGoalTest (t :Tile) :boolean{
-    if (t == tileC){
+    if (t == tileD){
 	return true;
     }
     return false;
