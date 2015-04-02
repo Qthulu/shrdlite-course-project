@@ -1,2 +1,5 @@
 shrdlite-*.js
 .DS_Store
+tsconfig.json
+Astar/*.js
+
