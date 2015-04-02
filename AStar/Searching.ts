@@ -1,12 +1,14 @@
 /// <reference path="lib/collections.ts" />
 
 /*
-Collection of searching : 
-  1) non-informed search (BreadthFirst, DepthFirst)
-  2) informed search (Best, AStar)
+  Reason for this file: try to refactor searching algorithms
+  Collection of searching: 
+    1) non-informed search (BreadthFirst, DepthFirst)
+    2) informed search (Best, AStar)
+  TODO: if there's a way to time each search?
 */
 
-/* Leif's ncie Idea: 
+/* Leif's nice Idea: 
    instead of keeping all nodes, what we need is just neighbouring functions 
 */
 
