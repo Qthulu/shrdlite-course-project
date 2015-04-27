@@ -59,11 +59,24 @@ module Interpreter {
                         {pol: true, rel: "holding", args: [targets[ix]] }
                     ] );
                 }
-                break;
+                break; // ENDOF take
             case "move":
                 console.log("Got move! which is not implemented yet...");
+                var targets = findTargetEntities(cmd.ent, state);
+
+	        break; // ENDOF move
+	    
+	    // another possible cmd "put"; only parsed under "put it ..."
+	    // implies arm is holding something
+	    case "put":
+	        var heldObj = state.holding; 
+	        console.log("Let's put something!");
+	        console.log(heldObj); 
+	    // this will be null since default in TextWorld nulls init-holding obj
+	        break;
             default:
                 console.log("Interpreter: UNKNOWN cmd: " + cmd.cmd);
+	        // TODO replace this with interpret_error
         }
         return intprt;
     }
