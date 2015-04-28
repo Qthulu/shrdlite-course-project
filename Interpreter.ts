@@ -63,7 +63,6 @@ module Interpreter {
             case "move":
                 console.log("Got move! which is not implemented yet...");
                 var targets = findTargetEntities(cmd.ent, state);
-
 	        break; // ENDOF move
 	    
 	    // another possible cmd "put"; only parsed under "put it ..."
