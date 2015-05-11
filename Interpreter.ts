@@ -48,12 +48,17 @@ module Interpreter {
 
 
     function interpretCommand(cmd : Parser.Command, state : WorldState) : Literal[][] {
-
         var intprt : Literal[][] = [];
-
+	var searchingResult = findTargetEntities(cmd.ent, state);
+        var targets = searchingResult.targets;
+	if (searchingResult.status === "AMBIGUITY"){
+	    console.log("CASE AMBIGUITY!");
+	    throw new Interpreter.Error("There are several objects that fit the description");
+	}
         switch(cmd.cmd){
             case "take":
-                var targets = findTargetEntities(cmd.ent, state);
+                //var targets = findTargetEntities(cmd.ent, state);
+
                 for (var ix in targets){
                     intprt.push( [
                         {pol: true, rel: "holding", args: [targets[ix]] }
@@ -61,9 +66,12 @@ module Interpreter {
                 }
                 break;
             case "move":
-                var targets = findTargetEntities(cmd.ent, state);
+                //var targets = findTargetEntities(cmd.ent, state);
                 var location = cmd.loc;
-                var locationTargets = findTargetEntities(location.ent, state);
+                
+	        //var locationTargets = findTargetEntities(location.ent, state);
+	        var locationSearch = findTargetEntities(location.ent, state);
+	        var locationTargets = locationSearch.targets;
 
                 // TODO use information about canSupport...
 
@@ -82,14 +90,17 @@ module Interpreter {
         return intprt;
     }
 
-
+    /**
+     * Accomodating possible extension
+     */
+    interface SearchingResult {status: string; targets: string[]}
     /**
     * @return list of targets in the world that complies with the specified entity.
     */
-    function findTargetEntities(en : Parser.Entity, state : WorldState) : string[] {
+    function findTargetEntities(en : Parser.Entity, state : WorldState) : SearchingResult {
         var goalObj = en.obj;
         var result : string[] = [];
-
+	var searchResult : SearchingResult = {status:"", targets:result};
         if(en.obj.form === "floor"){
             result.push("floor");
         }
@@ -120,12 +131,17 @@ module Interpreter {
                 break;
             case "the":
                 if(result.length > 1){
-                    throw new Interpreter.Error("There are several objects that fit the description");
+		    searchResult.status = "AMBIGUITY";
+		    searchResult.targets = result;
+		    return searchResult;
+                    //throw new Interpreter.Error("There are several objects that fit the description");
                 }
                 break;
         }
-
-        return result;
+	searchResult.status = "FOUND";
+	searchResult.targets = result;
+	return searchResult;
+        //return result;
     }
 
     function getRandomInt(max) {
