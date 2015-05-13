@@ -42,10 +42,19 @@ module Interpreter {
         constructor(public message? : string) {}
         public toString() {return this.name + ": " + this.message}
     }
-
+    
+    //////////
+    export class Ambiguity implements Error {
+	public name = "Interpreter.Ambiguity";
+	public cmd : Parser.Command;
+	constructor(c: Parser.Command, public message? : string) {
+	    this.cmd = c;
+	}
+	public toString() {return this.name + ": " + this.message +" -> "+ this.cmd}
+    }
 
     //////////////////////////////////////////////////////////////////////
-    // private functions
+    // PRIVATE functions
 
 
     function interpretCommand(cmd : Parser.Command, state : WorldState) : Literal[][] {
@@ -67,7 +76,7 @@ module Interpreter {
 
 	    // targets should be passed on for clearification questions
 // also, it might be helpful if we keep the current cmd and ask the question 
-	    throw new Interpreter.Error("There are several objects that fit the description");
+	    throw new Interpreter.Ambiguity(cmd, "There are several objects that fit the description\n Can you tell me more about "+allPossible.toArray());
 	}
         switch(cmd.cmd){
             case "take":

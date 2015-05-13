@@ -54,7 +54,12 @@ module Shrdlite {
             if (err instanceof Interpreter.Error) {
                 world.printError("Interpretation error", err.message);
                 return;
-            } else {
+            } // handling ambiguity here (jeff)
+	    else if (err instanceof Interpreter.Ambiguity){
+		world.printSystemOutput("[Ambiguity]: " + err.message, err.cmd);
+		//world.printError("ambiguity with command: ", err.cmd);
+		return;
+	    } else {
                 throw err;
             }
         }
