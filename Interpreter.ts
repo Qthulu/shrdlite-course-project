@@ -1,5 +1,6 @@
 ///<reference path="World.ts"/>
 ///<reference path="Parser.ts"/>
+///<reference path="lib/collections.ts"/>
 
 module Interpreter {
 
@@ -52,13 +53,25 @@ module Interpreter {
 	var searchingResult = findTargetEntities(cmd.ent, state);
         var targets = searchingResult.targets;
 	if (searchingResult.status === "AMBIGUITY"){
-	    console.log("CASE AMBIGUITY!");
+	    console.log("[AMBIGUITY] Possible candidates: ");
+	    console.log(searchingResult.targets); 
+	    console.log("also I know a nice question to ask could be: ");
+	    var similarities = ["Color", "Form", "Size"];
+	    var allPossible = new collections.Set<string>();
+	    for (var i in similarities){
+		allPossible.add(similarities[i]);
+	    }
+	    //console.log(searchingResult.common);
+	    allPossible.difference(searchingResult.common);
+	    console.log(allPossible.toArray());
+
+	    // targets should be passed on for clearification questions
+// also, it might be helpful if we keep the current cmd and ask the question 
 	    throw new Interpreter.Error("There are several objects that fit the description");
 	}
         switch(cmd.cmd){
             case "take":
                 //var targets = findTargetEntities(cmd.ent, state);
-
                 for (var ix in targets){
                     intprt.push( [
                         {pol: true, rel: "holding", args: [targets[ix]] }
@@ -68,7 +81,6 @@ module Interpreter {
             case "move":
                 //var targets = findTargetEntities(cmd.ent, state);
                 var location = cmd.loc;
-                
 	        //var locationTargets = findTargetEntities(location.ent, state);
 	        var locationSearch = findTargetEntities(location.ent, state);
 	        var locationTargets = locationSearch.targets;
@@ -93,14 +105,15 @@ module Interpreter {
     /**
      * Accomodating possible extension
      */
-    interface SearchingResult {status: string; targets: string[]}
+    interface SearchingResult {status: string; targets: string[]; common: collections.Set<string>;}
     /**
     * @return list of targets in the world that complies with the specified entity.
     */
     function findTargetEntities(en : Parser.Entity, state : WorldState) : SearchingResult {
         var goalObj = en.obj;
         var result : string[] = [];
-	var searchResult : SearchingResult = {status:"", targets:result};
+	var commonGround  = new collections.Set<string>();
+	var searchResult : SearchingResult = {status:"", targets:result, common:commonGround};
         if(en.obj.form === "floor"){
             result.push("floor");
         }
@@ -112,16 +125,19 @@ module Interpreter {
                 if(goalObj.size != obj.size){
                     continue;
                 }
+		else {commonGround.add("Size");}
             }
             if(goalObj.color){
                 if(goalObj.color != obj.color){
                     continue;
                 }
+		else {commonGround.add("Color");}
             }
             if(goalObj.form){
                 if(goalObj.form != obj.form){
                     continue;
                 }
+		else {commonGround.add("Form");}
             }
             // TODO consider location for filtering as well!
             result.push(objName);
@@ -133,6 +149,7 @@ module Interpreter {
                 if(result.length > 1){
 		    searchResult.status = "AMBIGUITY";
 		    searchResult.targets = result;
+		    searchResult.common = commonGround;
 		    return searchResult;
                     //throw new Interpreter.Error("There are several objects that fit the description");
                 }
