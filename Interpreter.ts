@@ -47,8 +47,13 @@ module Interpreter {
     export class Ambiguity implements Error {
 	public name = "Interpreter.Ambiguity";
 	public cmd : Parser.Command;
-	constructor(c: Parser.Command, public message? : string) {
+	public searchingResult : SearchingResult;
+	constructor(c: Parser.Command
+		    , previousSearch : SearchingResult
+		    , public message? : string) 
+	{
 	    this.cmd = c;
+	    this.searchingResult = previousSearch; 
 	}
 	public toString() {return this.name + ": " + this.message +" -> "+ this.cmd}
     }
@@ -75,8 +80,12 @@ module Interpreter {
 	    console.log(allPossible.toArray());
 
 	    // targets should be passed on for clearification questions
-// also, it might be helpful if we keep the current cmd and ask the question 
-	    throw new Interpreter.Ambiguity(cmd, "There are several objects that fit the description\n Can you tell me more about "+allPossible.toArray());
+	    // also, it might be helpful if we keep the current cmd and ask the question 
+	    throw new Interpreter.Ambiguity(cmd
+					    , searchingResult
+					    , "Can you tell me more about "
+					    + allPossible.toArray());
+	    // A more complex Interpreter.Ambiguity containing targets cmd and etc is needed for much "clever" dialogue 
 	}
         switch(cmd.cmd){
             case "take":
@@ -114,7 +123,12 @@ module Interpreter {
     /**
      * Accomodating possible extension
      */
-    interface SearchingResult {status: string; targets: string[]; common: collections.Set<string>;}
+    export interface SearchingResult {
+	status: string; 
+	targets: string[]; 
+	common: collections.Set<string>;
+    }
+    
     /**
     * @return list of targets in the world that complies with the specified entity.
     */

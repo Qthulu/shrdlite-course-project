@@ -109,6 +109,7 @@ module Planner {
                 if(holds){
                     return 1;
                     // Just drop it. Optionally: use canSupport function.
+//*
                 }
                 // Already done
                 return 0;
