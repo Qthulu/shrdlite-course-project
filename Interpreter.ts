@@ -164,7 +164,7 @@ module Interpreter {
 		    }
 	        });
 	        if (locationTargets.length > 1 && state.ambiguousObjs.length >1){
-		    state.ambiguousObjs = supportiveAmbiguousTargets;
+		    state.ambiguousObjs.push(supportiveAmbiguousTargets);
 		}
 	    
 	        /// small bug found: should revisit targets again to eliminate impossible ones 
