@@ -17,6 +17,7 @@ module Interpreter {
             intprt.intp = interpretCommand(intprt.prs, currentState);
             interpretations.push(intprt);
         });
+
 	// enhanching extension
 	if (currentState.status[0] === "softambiguity") {
 	    currentState.previousCmd = parses;
@@ -166,6 +167,7 @@ module Interpreter {
                 var targets = findTargetEntities(cmd.ent, state).targets;
                 console.log("TARGETS: "+targets.length);
                 findMoveInterpretations(cmd, state, intprt, targets);
+	        console.log("interpretation was: " );
                 break;
             case "put":
                 if (state.holding === null) {
@@ -241,8 +243,11 @@ module Interpreter {
 
                 var objA = findObjDef(state, above);
                 var objB = findObjDef(state, below);
+		console.log(objA);
+		console.log(objB);
                 if(exactlyAbove){
                     if(!canSupport(objA, objB)){
+			console.log("cannot support");
                         continue;
                     }
                 } else { // somewhere above.
@@ -257,7 +262,9 @@ module Interpreter {
                 if(canSupport(objA, objB)){
 		    supportiveAmbiguousTargets.push(objB);
 		}
-
+		console.log("Made it here");
+		console.log(objA);
+		console.log(objB);
                 intprt.push( [
                     {pol: true, rel: locationRel, args: [above, below] }
                 ] );
@@ -265,7 +272,11 @@ module Interpreter {
         }
 	// make sure supportiveAmbiguousTargets is not undefined and more than one
 	if (supportiveAmbiguousTargets && supportiveAmbiguousTargets.length >1){
-            state.ambiguousObjs = supportiveAmbiguousTargets;
+            state.ambiguousObjs.push(supportiveAmbiguousTargets);
+	    console.log(state.ambiguousObjs);
+	    // not optimal but more reasonable 
+	    // should fix in Shrdlite.ts
+	    // = result in wrong behaviour 
         }
     }
 
