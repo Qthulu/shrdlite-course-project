@@ -24,6 +24,13 @@ $(TARGETS): %: shrdlite-%.js
 grammar.js: grammar.ne
 	nearleyc $< > $@
 
+io: clean html
+	cp -f *.html ../Qthulu.github.io/
+	cp -f *.css ../Qthulu.github.io/
+	cp -f *.js ../Qthulu.github.io/
+	cp -f shrdlite.html ../Qthulu.github.io/index.html
+	cp -fa lib ../Qthulu.github.io/
+
 run: shrdlite-offline.js
 	# node shrdlite-offline.js small "grasp the yellow box"
 	# node shrdlite-offline.js small "put the blue table on a box"
